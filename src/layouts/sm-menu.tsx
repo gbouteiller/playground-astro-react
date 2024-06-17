@@ -17,8 +17,8 @@ export default ({menu}: {menu: MenuItem[]}) => (
           <Package2 className="h-6 w-6" />
           <span className="sr-only">Acme Inc</span>
         </a>
-        {menu.map(({href, isActive, text}) => (
-          <a href={href} className={cn("transition-colors hover:text-foreground", !isActive && "text-muted-foreground")}>
+        {menu.map(({href, id, isActive, text}) => (
+          <a key={id} href={href} className={cn("transition-colors hover:text-foreground", !isActive && "text-muted-foreground")}>
             {text}
           </a>
         ))}
