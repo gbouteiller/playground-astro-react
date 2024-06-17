@@ -1,0 +1,20 @@
+---
+import {getContactMessage, getValuesFor, type ContactState} from "@/actions/utils"
+import Layout from "@/layouts/layout.astro"
+import {formNavs, formTanstackNavs} from "@/lib/utils"
+import {actions} from "astro:actions"
+import Form from "./form"
+
+// DATA ************************************************************************************************************************************
+const state = Astro.getActionResult(actions.sendEmail) ?? {data: false, error: undefined}
+const values = await getValuesFor({
+  actionName: "sendEmail",
+  defaultValues: {email: "", forename: "", message: "", surname: ""},
+  shouldSkip: (state: ContactState) => !!state.data,
+})(Astro.request, state)
+const message = getContactMessage(state)
+---
+
+<Layout aside={formNavs} tabs={formTanstackNavs}>
+  <Form client:load defaultValues={values} initialState={state} />
+</Layout>

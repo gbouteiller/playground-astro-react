@@ -1,3 +1,5 @@
+import {getIconCollections, iconsPlugin} from "@egoist/tailwindcss-icons"
+import typography from "@tailwindcss/typography"
 import type {Config} from "tailwindcss"
 import animate from "tailwindcss-animate"
 
@@ -56,12 +58,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+          from: {height: "0"},
+          to: {height: "var(--radix-accordion-content-height)"},
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          from: {height: "var(--radix-accordion-content-height)"},
+          to: {height: "0"},
         },
       },
       animation: {
@@ -70,5 +72,11 @@ export default {
       },
     },
   },
-  plugins: [animate],
+  plugins: [
+    animate,
+    iconsPlugin({
+      collections: getIconCollections(["mdi", "lucide"]),
+    }),
+    typography,
+  ],
 } satisfies Config

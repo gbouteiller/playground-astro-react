@@ -1,20 +1,66 @@
 ---
+import {cn, mainNavs, menuFrom, type Nav} from "@/lib/utils"
 import "@/styles/globals.css"
-import {Menu} from "./menu"
 import {ViewTransitions} from "astro:transitions"
+import {Package2} from "lucide-react"
+import SmMenu from "./sm-menu"
+import Tabs from "./tabs"
+
+const {aside, tabs} = Astro.props
+
+const pathname = new URL(Astro.request.url).pathname
+const mainMenu = menuFrom(mainNavs, pathname)
+const asideMenu = menuFrom(aside ?? [], pathname)
+const activeTab = tabs?.find(({href}) => href === pathname)?.id
+
+interface Props {
+  aside?: Nav[]
+  tabs?: Nav[]
+}
 ---
 
 <html lang="fr">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro React</title>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro React</title>
     <ViewTransitions />
-	</head>
-	<body>
-    <Menu client:load />
-		<slot />
-	</body>
+  </head>
+  <body class="flex min-h-screen w-full flex-col">
+    <header class="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+      <nav class="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+        <a href="/" class="flex items-center gap-2 text-lg font-semibold md:text-base">
+          <Package2 className="h-6 w-6" />
+          <span class="sr-only">Playground</span>
+        </a>
+        {
+          mainMenu.map(({href, isActive, text}) => (
+            <a {href} class={cn("transition-colors hover:text-foreground", !isActive && "text-muted-foreground")}>
+              {text}
+            </a>
+          ))
+        }
+      </nav>
+      <SmMenu client:media="(max-width: 768px)" menu={mainMenu} />
+    </header>
+    <main class="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
+      <div class="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
+        <nav class="grid gap-4 text-sm text-muted-foreground">
+          {
+            asideMenu.map(({href, isActive, text}) => (
+              <a {href} class={cn(isActive && "font-semibold text-primary")}>
+                {text}
+              </a>
+            ))
+          }
+        </nav>
+        <div class="grid gap-6">
+          {tabs && activeTab && <Tabs client:load navs={tabs} active={activeTab} />}
+          <slot />
+        </div>
+      </div>
+    </main>
+  </body>
 </html>
