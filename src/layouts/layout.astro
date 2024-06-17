@@ -57,7 +57,7 @@ interface Props {
           }
         </nav>
         <div class="grid gap-6">
-          {tabs && activeTab && <Tabs client:load navs={tabs} active={activeTab} />}
+          {tabs && activeTab && <Tabs navs={tabs} active={activeTab} />}
           <slot />
         </div>
       </div>
