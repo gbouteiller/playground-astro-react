@@ -1,0 +1,13 @@
+---
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
+import Layout from "@/layouts/layout.astro"
+import {formModularFormsNavs, formNavs} from "@/lib/utils"
+---
+
+<Layout aside={formNavs} tabs={formModularFormsNavs}>
+  <!-- <Form client:load /> -->
+  <Alert>
+    <AlertTitle>Alert!</AlertTitle>
+    <AlertDescription>not working yet...</AlertDescription>
+  </Alert>
+</Layout>

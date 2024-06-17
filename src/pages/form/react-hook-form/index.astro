@@ -1,7 +1,7 @@
 ---
 import {getContactMessage, getValuesFor, type ContactState} from "@/actions/utils"
 import Layout from "@/layouts/layout.astro"
-import {formNavs, formRhfNavs} from "@/lib/utils"
+import {formNavs, formReactHookFormNavs} from "@/lib/utils"
 import {actions} from "astro:actions"
 import Form from "./form"
 
@@ -15,6 +15,6 @@ const values = await getValuesFor({
 const message = getContactMessage(state)
 ---
 
-<Layout aside={formNavs} tabs={formRhfNavs}>
+<Layout aside={formNavs} tabs={formReactHookFormNavs}>
   <Form client:load defaultValues={values} initialState={state} />
 </Layout>

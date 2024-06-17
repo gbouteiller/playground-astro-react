@@ -32,6 +32,12 @@ importers:
       '@iconify/json':
         specifier: ^2.2.219
         version: 2.2.219
+      '@modular-forms/react':
+        specifier: ^0.7.0
+        version: 0.7.0(@preact/signals-react@2.0.2(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614)
+      '@preact/signals-react':
+        specifier: ^2.0.2
+        version: 2.0.2(react@19.0.0-rc-fb9a90fa48-20240614)
       '@radix-ui/react-checkbox':
         specifier: 1.1.0-rc.6
         version: 1.1.0-rc.6(react-dom@19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614)(types-react-dom@19.0.0-rc.0)(types-react@19.0.0-rc.0)
@@ -978,6 +984,12 @@ packages:
   '@manypkg/get-packages@1.1.3':
     resolution: {integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==}
 
+  '@modular-forms/react@0.7.0':
+    resolution: {integrity: sha512-k0B6PGkTbwuj/cThNSK3t4V+7mu80TA+lOgRgd6EtkKRnrYMU/nO7HHwz6Szp4Di8kxv93Rb7/kgse0HU0hvlA==}
+    peerDependencies:
+      '@preact/signals-react': ^1.0.0
+      react: ^18.0.0
+
   '@netlify/functions@2.7.0':
     resolution: {integrity: sha512-4pXC/fuj3eGQ86wbgPiM4zY8+AsNrdz6vcv6FEdUJnZW+LqF8IWjQcY3S0d1hLeLKODYOqq4CkrzGyCpce63Nw==}
     engines: {node: '>=14.0.0'}
@@ -1080,6 +1092,14 @@ packages:
   '@pkgr/core@0.1.1':
     resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@preact/signals-core@1.6.1':
+    resolution: {integrity: sha512-KXEEmJoKDlo0Igju/cj9YvKIgyaWFDgnprShQjzimUd5VynAAdTWMshawEOjUVeKbsI0aR58V6WOQp+DNcKApw==}
+
+  '@preact/signals-react@2.0.2':
+    resolution: {integrity: sha512-JcqkrRJtYmSlVy89DL65ruFEGv4rTreQWVE/fmGQ+FtN86TaYUcwIesE4lR6IkuX33ZpGjdoh8a+0auDePD5UA==}
+    peerDependencies:
+      react: ^16.14.0 || 17.x || 18.x
 
   '@radix-ui/primitive@1.1.0-rc.6':
     resolution: {integrity: sha512-npVN3RUkSsu6r91nv4k423oo1tYkWo759rezA3EUrpDr+kFJaQ8u7AwtDpY1yZrllcPygx72mN3O8CAnV+Rpxw==}
@@ -4166,6 +4186,9 @@ packages:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
 
+  valibot@0.32.0:
+    resolution: {integrity: sha512-FXBnJl4bNOmeg7lQv+jfvo/wADsRBN8e9C3r+O77Re3dEnDma8opp7p4hcIbF7XJJ30h/5SVohdjer17/sHOsQ==}
+
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
@@ -5354,6 +5377,12 @@ snapshots:
       globby: 11.1.0
       read-yaml-file: 1.1.0
 
+  '@modular-forms/react@0.7.0(@preact/signals-react@2.0.2(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614)':
+    dependencies:
+      '@preact/signals-react': 2.0.2(react@19.0.0-rc-fb9a90fa48-20240614)
+      react: 19.0.0-rc-fb9a90fa48-20240614
+      valibot: 0.32.0
+
   '@netlify/functions@2.7.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@netlify/serverless-functions-api': 1.18.1(@opentelemetry/api@1.9.0)
@@ -5460,6 +5489,14 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.1.1': {}
+
+  '@preact/signals-core@1.6.1': {}
+
+  '@preact/signals-react@2.0.2(react@19.0.0-rc-fb9a90fa48-20240614)':
+    dependencies:
+      '@preact/signals-core': 1.6.1
+      react: 19.0.0-rc-fb9a90fa48-20240614
+      use-sync-external-store: 1.2.2(react@19.0.0-rc-fb9a90fa48-20240614)
 
   '@radix-ui/primitive@1.1.0-rc.6': {}
 
@@ -9051,6 +9088,8 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   uuid@8.3.2: {}
+
+  valibot@0.32.0: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:

@@ -14,7 +14,7 @@ import {FormInput, FormItem, FormLabel, FormMessage, FormTextarea} from "./ui"
 export default ({children, defaultValues, initialState}: ContactFormProps) => {
   const [state, action, pending] = useActionState(experimental_withState(actions.sendEmail.safe), initialState)
 
-  const form = useForm<ContactValues>({defaultValues})
+  const {Field, handleSubmit, reset, setFieldMeta, state: formState} = useForm<ContactValues>({defaultValues})
 
   if (initialState.error instanceof ActionInputError)
     Object.entries(initialState.error.fields).forEach(([field, errors = []]) => {
@@ -27,22 +27,22 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
         touchedErrors: errors,
         errorMap: {onChange: errors?.[0]},
       }
-      form.setFieldMeta(field as keyof ContactValues, meta)
+      setFieldMeta(field as keyof ContactValues, meta)
     })
 
   useEffect(() => {
     const {code, description} = getContactMessage(state) ?? {}
     if (!code) return
-    if (code === "SUCCESS") form.reset()
+    if (code === "SUCCESS") reset()
     code === "SUCCESS" ? toast.success("Succès", {description}) : toast.error("Erreur", {description})
-  }, [state])
+  }, [reset, state])
 
   function onSubmit(e: FormEvent) {
-    if (form.state.isPristine || !form.state.canSubmit) {
+    if (formState.isPristine || !formState.canSubmit) {
       e.preventDefault()
       e.stopPropagation()
     }
-    form.handleSubmit()
+    handleSubmit()
   }
 
   return (
@@ -54,7 +54,7 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
         </CardHeader>
         <CardContent className="flex flex-col gap-8">
           <div className="flex flex-col gap-8 sm:flex-row">
-            <form.Field name="forename" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.forename}}>
+            <Field name="forename" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.forename}}>
               {(field) => (
                 <FormItem className="flex-1">
                   <FormLabel field={field}>Prénom</FormLabel>
@@ -62,8 +62,8 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
                   <FormMessage field={field} />
                 </FormItem>
               )}
-            </form.Field>
-            <form.Field name="surname" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.surname}}>
+            </Field>
+            <Field name="surname" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.surname}}>
               {(field) => (
                 <FormItem className="flex-1">
                   <FormLabel field={field}>Nom</FormLabel>
@@ -71,9 +71,9 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
                   <FormMessage field={field} />
                 </FormItem>
               )}
-            </form.Field>
+            </Field>
           </div>
-          <form.Field name="email" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.email}}>
+          <Field name="email" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.email}}>
             {(field) => (
               <FormItem>
                 <FormLabel field={field}>Votre courriel</FormLabel>
@@ -81,8 +81,8 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
                 <FormMessage field={field} />
               </FormItem>
             )}
-          </form.Field>
-          <form.Field name="message" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.message}}>
+          </Field>
+          <Field name="message" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.message}}>
             {(field) => (
               <FormItem>
                 <FormLabel field={field}>Votre message</FormLabel>
@@ -90,7 +90,7 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
                 <FormMessage field={field} />
               </FormItem>
             )}
-          </form.Field>
+          </Field>
         </CardContent>
         <CardFooter className="flex justify-end">
           <Button type="submit" disabled={pending} className="flex gap-2">

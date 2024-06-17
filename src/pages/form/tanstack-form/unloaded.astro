@@ -1,7 +1,8 @@
 ---
 import {getContactMessage, getValuesFor, type ContactState} from "@/actions/utils"
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
 import Layout from "@/layouts/layout.astro"
-import {formNavs, formTanstackNavs} from "@/lib/utils"
+import {formNavs, formTanstackFormNavs} from "@/lib/utils"
 import {actions} from "astro:actions"
 import Form from "./form"
 
@@ -15,6 +16,15 @@ const values = await getValuesFor({
 const message = getContactMessage(state)
 ---
 
-<Layout aside={formNavs} tabs={formTanstackNavs}>
-  <Form client:load defaultValues={values} initialState={state} />
+<Layout aside={formNavs} tabs={formTanstackFormNavs}>
+  <Form defaultValues={values} initialState={state}>
+    {
+      message && (
+        <Alert variant={message.code === "SUCCESS" ? "default" : "destructive"}>
+          <AlertTitle>{message.code === "SUCCESS" ? "Succès" : "Erreur"}</AlertTitle>
+          <AlertDescription>{message.description}</AlertDescription>
+        </Alert>
+      )
+    }
+  </Form>
 </Layout>
