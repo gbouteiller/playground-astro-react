@@ -1,23 +1,23 @@
 ---
-import {getContactMessage, getValuesFor, type ContactState} from "@/actions/utils"
+import {contactDefaultValues, getContactMessage, getValuesFor, type ContactState} from "@/actions/utils"
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
 import Layout from "@/layouts/layout.astro"
 import {formNavs, formReactHookFormNavs} from "@/lib/utils"
 import {actions} from "astro:actions"
-import Form from "./form"
+import Form from "./_form"
 
 // DATA ************************************************************************************************************************************
 const state = Astro.getActionResult(actions.sendEmail) ?? {data: false, error: undefined}
 const values = await getValuesFor({
   actionName: "sendEmail",
-  defaultValues: {email: "", forename: "", message: "", surname: ""},
+  defaultValues: contactDefaultValues,
   shouldSkip: (state: ContactState) => !!state.data,
 })(Astro.request, state)
 const message = getContactMessage(state)
 ---
 
 <Layout aside={formNavs} tabs={formReactHookFormNavs}>
-  <Form defaultValues={values} initialState={state}>
+  <Form defaultState={state} defaultValues={values}>
     {
       message && (
         <Alert variant={message.code === "SUCCESS" ? "default" : "destructive"}>

@@ -1,34 +1,25 @@
+import {getFormState, toFormData} from "@/actions/tanstack-form"
 import {getContactMessage, zContactValues, type ContactState, type ContactValues} from "@/actions/utils"
 import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {Toaster} from "@/components/ui/sonner"
 import {cn} from "@/lib/utils"
 import {experimental_withState} from "@astrojs/react/actions"
-import {useForm} from "@tanstack/react-form"
+import {mergeForm, useForm, useTransform} from "@tanstack/react-form"
 import {zodValidator} from "@tanstack/zod-form-adapter"
-import {ActionInputError, actions} from "astro:actions"
-import {useActionState, useEffect, type FormEvent, type ReactNode} from "react"
+import {actions} from "astro:actions"
+import {startTransition, useActionState, useEffect, type FormEvent, type ReactNode} from "react"
 import {toast} from "sonner"
-import {FormInput, FormItem, FormLabel, FormMessage, FormTextarea} from "./ui"
+import {FormInput, FormItem, FormLabel, FormMessage, FormTextarea} from "./_ui"
 
-export default ({children, defaultValues, initialState}: ContactFormProps) => {
-  const [state, action, pending] = useActionState(experimental_withState(actions.sendEmail.safe), initialState)
+export default ({children, defaultState, defaultValues}: ContactFormProps) => {
+  const [state, action, pending] = useActionState(experimental_withState(actions.sendEmail.safe), defaultState)
 
-  const {Field, handleSubmit, reset, setFieldMeta, state: formState} = useForm<ContactValues>({defaultValues})
-
-  if (initialState.error instanceof ActionInputError)
-    Object.entries(initialState.error.fields).forEach(([field, errors = []]) => {
-      const meta = {
-        errors,
-        isDirty: false,
-        isTouched: false,
-        isPristine: true,
-        isValidating: false,
-        touchedErrors: errors,
-        errorMap: {onChange: errors?.[0]},
-      }
-      setFieldMeta(field as keyof ContactValues, meta)
-    })
+  const {Field, handleSubmit, reset} = useForm<ContactValues>({
+    defaultValues,
+    transform: useTransform((baseForm) => mergeForm(baseForm, getFormState(defaultState)), [state]),
+    onSubmit: ({value}) => startTransition(() => action(toFormData(value))),
+  })
 
   useEffect(() => {
     const {code, description} = getContactMessage(state) ?? {}
@@ -38,10 +29,8 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
   }, [reset, state])
 
   function onSubmit(e: FormEvent) {
-    if (formState.isPristine || !formState.canSubmit) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
+    e.preventDefault()
+    e.stopPropagation()
     handleSubmit()
   }
 
@@ -54,7 +43,7 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
         </CardHeader>
         <CardContent className="flex flex-col gap-8">
           <div className="flex flex-col gap-8 sm:flex-row">
-            <Field name="forename" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.forename}}>
+            <Field name="forename" validatorAdapter={zodValidator()} validators={{onChange: zContactValues.shape.forename}}>
               {(field) => (
                 <FormItem className="flex-1">
                   <FormLabel field={field}>Prénom</FormLabel>
@@ -63,7 +52,7 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
                 </FormItem>
               )}
             </Field>
-            <Field name="surname" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.surname}}>
+            <Field name="surname" validatorAdapter={zodValidator()} validators={{onChange: zContactValues.shape.surname}}>
               {(field) => (
                 <FormItem className="flex-1">
                   <FormLabel field={field}>Nom</FormLabel>
@@ -73,7 +62,7 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
               )}
             </Field>
           </div>
-          <Field name="email" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.email}}>
+          <Field name="email" validatorAdapter={zodValidator()} validators={{onChange: zContactValues.shape.email}}>
             {(field) => (
               <FormItem>
                 <FormLabel field={field}>Votre courriel</FormLabel>
@@ -82,7 +71,7 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
               </FormItem>
             )}
           </Field>
-          <Field name="message" validatorAdapter={zodValidator} validators={{onChange: zContactValues.shape.message}}>
+          <Field name="message" validatorAdapter={zodValidator()} validators={{onChange: zContactValues.shape.message}}>
             {(field) => (
               <FormItem>
                 <FormLabel field={field}>Votre message</FormLabel>
@@ -104,4 +93,4 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
     </form>
   )
 }
-export type ContactFormProps = {children?: ReactNode; defaultValues: ContactValues; initialState: ContactState}
+export type ContactFormProps = {children?: ReactNode; defaultValues: ContactValues; defaultState: ContactState}

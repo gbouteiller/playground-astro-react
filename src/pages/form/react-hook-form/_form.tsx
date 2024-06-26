@@ -1,4 +1,5 @@
-import {getContactMessage, rhfErrorsFromAstro, zContactValues, type ContactState, type ContactValues} from "@/actions/utils"
+import {rhfErrorsFromAstro} from "@/actions/react-hook-form"
+import {getContactMessage, zContactValues, type ContactState, type ContactValues} from "@/actions/utils"
 import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
@@ -13,14 +14,14 @@ import {useActionState, useEffect, useMemo, type ReactNode} from "react"
 import {useForm} from "react-hook-form"
 import {toast} from "sonner"
 
-export default ({children, defaultValues, initialState}: ContactFormProps) => {
-  const [state, action, pending] = useActionState(experimental_withState(actions.sendEmail.safe), initialState)
+export default ({children, defaultState, defaultValues}: ContactFormProps) => {
+  const [state, action, pending] = useActionState(experimental_withState(actions.sendEmail.safe), defaultState)
 
   const form = useForm<ContactValues>({
-    mode: "onTouched",
-    resolver: zodResolver(zContactValues),
     defaultValues,
     errors: useMemo(() => rhfErrorsFromAstro(state.error), [state]),
+    mode: "onTouched",
+    resolver: zodResolver(zContactValues),
   })
   const {control, formState, handleSubmit, reset} = form
 
@@ -108,4 +109,4 @@ export default ({children, defaultValues, initialState}: ContactFormProps) => {
     </Form>
   )
 }
-export type ContactFormProps = {children?: ReactNode; defaultValues: ContactValues; initialState: ContactState}
+export type ContactFormProps = {children?: ReactNode; defaultState: ContactState; defaultValues: ContactValues}

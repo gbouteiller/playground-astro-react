@@ -1,5 +1,4 @@
 import {actions, isInputError, type ActionError, type ErrorInferenceObject, type SafeResult} from "astro:actions"
-import type {FieldErrors, FieldValues} from "react-hook-form"
 import {z} from "zod"
 
 // CONTACT *********************************************************************************************************************************
@@ -9,6 +8,9 @@ export const zContactValues = z.object({
   message: z.string({message: "Ce champ est requis"}).trim().min(1, "Ce champ est requis"),
   surname: z.string({message: "Ce champ est requis"}).trim().min(1, "Ce champ est requis"),
 })
+
+export const contactDefaultValues: ContactValues = {email: "", forename: "", message: "", surname: ""}
+
 export type ContactValues = z.infer<typeof zContactValues>
 export type ContactState = Awaited<ReturnType<typeof actions.sendEmail.safe>>
 
@@ -39,12 +41,6 @@ export function getValuesFor<V extends FieldValues, D>({actionName, defaultValue
   }
 }
 
-export function rhfErrorsFromAstro<T extends FieldValues = FieldValues>(error?: ActionError) {
-  if (!error) return
-  if (!isInputError(error)) return {root: {type: error.code}} as FieldErrors<T>
-  return Object.fromEntries(Object.entries(error.fields).map(([name, errors]) => [name, {message: errors?.[0]}])) as FieldErrors<T>
-}
-
 // TYPES ***********************************************************************************************************************************
 export type MessageI18n = {SUCCESS: string} & {[key in ActionError["code"]]?: string}
 export type Message = {code: ActionError["code"] | "SUCCESS"; description: string}
@@ -56,3 +52,4 @@ export type GetValuesForParams<V extends FieldValues, D> = {
 }
 
 export type State<D = any> = SafeResult<ErrorInferenceObject, D>
+export type FieldValues = Record<string, any>
